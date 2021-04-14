@@ -38,6 +38,9 @@ sub _load_chapter { ## () :> Self
     my $ch_idx = $self->_ptr->[0];
     my $chapter = $self->book->chapters->[$ch_idx];
 
+    # Empty the target hashref
+    $self->{_chapter_dlines} = {};
+
     # Iterate over all Dlinesets in chapter
     my $dset_idx = 0;
     foreach my $dset ($chapter->number, $chapter->title, @{$chapter->body}) {
@@ -57,6 +60,9 @@ sub _load_dlineset { ## () :> Self
     # Fetch dlineset being pointed to
     my $ch_idx = $self->_ptr->[0];
     my $chapter = $self->book->chapters->[$ch_idx];
+
+    # Empty the target hashref
+    $self->{_curr_dlineset} = {};
 
     # Iterate over all Dlinesets in chapter
     my $dset_idx = $self->_ptr->[1];
