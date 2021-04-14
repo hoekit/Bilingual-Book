@@ -1,13 +1,11 @@
 package Book::Bilingual::Reader;
+# ABSTRACT: A book reader class
 use Mojo::Base -base;
 use Book::Bilingual;
 use Book::Bilingual::File;
 use Path::Tiny qw/path/;
 use List::Util qw/max/;
 use Carp;
-
-use lib qw(/home/hoekit/bin/lib);
-use Util qw/peek/;
 
 has 'book' => sub { Book::Bilingual->new};  # Book::Bilingual
 has 'file';                                 # Book File
@@ -144,14 +142,14 @@ sub _render_pointed { ## ($class,$str)
         # One of: 'src-lang'|''. Always start as 'src-lang'.
         $seg_class = $seg_class eq '' ? 'src-lang' : '';
 
-        # If segment class is src-lang, return a span else as it
+        # If segment class is src-lang, return a span else as is
         my $span = $seg_class ? "<span class=\"$seg_class\">$_ </span>" : $_;
 
         # Return span only if segment is non-empty, else empty string
         $_ ? $span : '';
     } split(' /', $str);
 
-    my $wrapped = "<span class=\"pointed\">".join('',@spans)."</span>";
+    my $wrapped = "<span id=\"Ptr\" class=\"pointed\">".join('',@spans)."</span>";
 
     return _render_normal($class,$wrapped);
 }

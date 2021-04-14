@@ -5,9 +5,6 @@ use Test::More;
 use lib qw(lib ../lib);
 use Book::Bilingual::Reader;
 
-use lib qw(/home/hoekit/bin/lib);
-use Util qw/peek/;
-
 my ($sub, $got, $exp, $msg, $tmp, $tmp1, $tmp2, $tmp3);
 
 
@@ -90,14 +87,14 @@ is($got, $exp, $msg);
 $msg = '_render_pointed("chapter-number","บทที่หนึ่ง /") returns correct string';
 $tmp = Book::Bilingual::Reader::_render_pointed('chapter-number','บทที่หนึ่ง /');
 $got = $tmp;
-$exp = "\n  <h1 class=\"chapter-number\"><span class=\"pointed\"><span class=\"src-lang\">บทที่หนึ่ง </span></span> </h1>\n";
+$exp = "\n  <h1 class=\"chapter-number\"><span id=\"Ptr\" class=\"pointed\"><span class=\"src-lang\">บทที่หนึ่ง </span></span> </h1>\n";
 is($got, $exp, $msg);
 }
 { ## _render_pointed("chapter-number",'บทที่ /One') returns correct string
 $msg = '_render_pointed("chapter-number","บทที่ /One") returns correct string';
 $tmp = Book::Bilingual::Reader::_render_pointed('chapter-number','บทที่ /One');
 $got = $tmp;
-$exp = "\n  <h1 class=\"chapter-number\"><span class=\"pointed\"><span class=\"src-lang\">บทที่ </span>One</span> </h1>\n";
+$exp = "\n  <h1 class=\"chapter-number\"><span id=\"Ptr\" class=\"pointed\"><span class=\"src-lang\">บทที่ </span>One</span> </h1>\n";
 is($got, $exp, $msg);
 }
 
