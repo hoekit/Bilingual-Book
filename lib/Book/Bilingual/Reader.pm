@@ -100,9 +100,12 @@ sub html { ## () :> HTML
                   ? $self->_curr_dlineset->{join('.',@{$self->_ptr})}
                   : $self->_chapter_dlines->{$loc};
 
+        my $ptr = $loc;
+        $ptr =~ s/\.(\d+)$/\.0/;
+
         # Render Dline depending on whether it is pointed to
-        $pointed ? _render_pointed($dline->class, $dline->str)
-                 : _render_normal($dline->class, $dline->str);
+        $pointed ? _render_pointed($dline->class, $dline->str, $ptr)
+                 : _render_normal($dline->class, $dline->str, $ptr);
     } sort keys %{$self->_chapter_dlines};
 
     # Render to HTML
@@ -122,25 +125,25 @@ sub _render {
 
     return '  <div class="'.$dline->class.'">'.join('',@spans).'</div>';
 }
-sub _render_normal { ## ($class,$str)
-    my ($class,$str) = @_;
+sub _render_normal { ## ($class,$str,$ptr)
+    my ($class,$str,$ptr) = @_;
 
     $str =~ s/^ \///;   # Remove language mark
     $str .= ' ';        # Add a space at the end of the line
 
-    return "\n  <h1 class=\"".$class.'">'.$str."</h1>\n"
+    return "\n  <h1 data-ptr=\"$ptr\" class=\"".$class.'">'.$str."</h1>\n"
         if $class eq 'chapter-number';
 
-    return "\n  <h2 class=\"".$class.'">'.$str."</h2>"
+    return "\n  <h2 data-ptr=\"$ptr\" class=\"".$class.'">'.$str."</h2>"
         if $class eq 'chapter-title';
 
-    return "\n\n  <br/><span class=\"".$class.'">'.$str.'</span>'
+    return "\n\n  <br/><span data-ptr=\"$ptr\" class=\"".$class.'">'.$str.'</span>'
         if $class eq 'paragraph-start';
 
-    return $str;
+    return "<span data-ptr=\"$ptr\">$str</span>";
 }
 sub _render_pointed { ## ($class,$str)
-    my ($class,$str) = @_;
+    my ($class,$str,$ptr) = @_;
 
     my $seg_class = '';
     my @spans = map {
@@ -157,7 +160,7 @@ sub _render_pointed { ## ($class,$str)
 
     my $wrapped = "<span id=\"Ptr\" class=\"pointed\">".join('',@spans)."</span>";
 
-    return _render_normal($class,$wrapped);
+    return _render_normal($class,$wrapped,$ptr);
 }
 
 sub _next_ptr { ## () :> undef | [Ptr,diff_chapter,diff_dlineset,diff_dline]

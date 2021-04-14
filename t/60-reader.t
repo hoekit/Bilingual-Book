@@ -54,47 +54,47 @@ $got = $tmp->html =~ /They are quite full this year/m ? 1 : 0;
 $exp = '1';
 is($got, $exp, $msg);
 }
-{ ## _render_normal("chapter-number",$str) returns correct string
-$msg = '_render_normal("chapter-number",$str) returns correct string';
-$tmp = Book::Bilingual::Reader::_render_normal('chapter-number',' /Chapter One');
+{ ## _render_normal("chapter-number",$str,"0.0.0") returns correct string
+$msg = '_render_normal("chapter-number",$str,"0.0.0") returns correct string';
+$tmp = Book::Bilingual::Reader::_render_normal('chapter-number',' /Chapter One','0.0.0');
 $got = $tmp;
-$exp = "\n  <h1 class=\"chapter-number\">Chapter One </h1>\n";
+$exp = "\n  <h1 data-ptr=\"0.0.0\" class=\"chapter-number\">Chapter One </h1>\n";
 is($got, $exp, $msg);
 }
-{ ## _render_normal("chapter-title",$str) returns correct string
-$msg = '_render_normal("chapter-title",$str) returns correct string';
-$tmp = Book::Bilingual::Reader::_render_normal('chapter-title',' /A Great One');
+{ ## _render_normal("chapter-title",$str,"0.1.0") returns correct string
+$msg = '_render_normal("chapter-title",$str,"0.1.0") returns correct string';
+$tmp = Book::Bilingual::Reader::_render_normal('chapter-title',' /A Great One','0.1.0');
 $got = $tmp;
-$exp = "\n  <h2 class=\"chapter-title\">A Great One </h2>";
+$exp = "\n  <h2 data-ptr=\"0.1.0\" class=\"chapter-title\">A Great One </h2>";
 is($got, $exp, $msg);
 }
-{ ## _render_normal("paragraph-start",$str) returns correct string
+{ ## _render_normal("paragraph-start",$str,"0.2.0") returns correct string
 $msg = '_render_normal("paragraph-start",$str) returns correct string';
-$tmp = Book::Bilingual::Reader::_render_normal('paragraph-start',' /A Great One');
+$tmp = Book::Bilingual::Reader::_render_normal('paragraph-start',' /A Great','0.2.0');
 $got = $tmp;
-$exp = "\n\n  <br/><span class=\"paragraph-start\">A Great One </span>";
+$exp = "\n\n  <br/><span data-ptr=\"0.2.0\" class=\"paragraph-start\">A Great </span>";
 is($got, $exp, $msg);
 }
-{ ## _render_normal("",$str) returns correct string
-$msg = '_render_normal("",$str) returns correct string';
-$tmp = Book::Bilingual::Reader::_render_normal('',' /A Great One');
+{ ## _render_normal("",$str,"0.3.0") returns correct string
+$msg = '_render_normal("",$str,"0.3.0") returns correct string';
+$tmp = Book::Bilingual::Reader::_render_normal('',' /A Great One','0.3.0');
 $got = $tmp;
-$exp = "A Great One ";
+$exp = "<span data-ptr=\"0.3.0\">A Great One </span>";
 is($got, $exp, $msg);
 }
 
-{ ## _render_pointed("chapter-number",'บทที่หนึ่ง /') returns correct string
-$msg = '_render_pointed("chapter-number","บทที่หนึ่ง /") returns correct string';
-$tmp = Book::Bilingual::Reader::_render_pointed('chapter-number','บทที่หนึ่ง /');
+{ ## _render_pointed("chapter-number",'บทที่หนึ่ง /',"0.0.0") returns correct string
+$msg = '_render_pointed("chapter-number","บทที่หนึ่ง /","0.0.0") returns correct string';
+$tmp = Book::Bilingual::Reader::_render_pointed('chapter-number','บทที่หนึ่ง /','0.0.0');
 $got = $tmp;
-$exp = "\n  <h1 class=\"chapter-number\"><span id=\"Ptr\" class=\"pointed\"><span class=\"src-lang\">บทที่หนึ่ง </span></span> </h1>\n";
+$exp = "\n  <h1 data-ptr=\"0.0.0\" class=\"chapter-number\"><span id=\"Ptr\" class=\"pointed\"><span class=\"src-lang\">บทที่หนึ่ง </span></span> </h1>\n";
 is($got, $exp, $msg);
 }
-{ ## _render_pointed("chapter-number",'บทที่ /One') returns correct string
-$msg = '_render_pointed("chapter-number","บทที่ /One") returns correct string';
-$tmp = Book::Bilingual::Reader::_render_pointed('chapter-number','บทที่ /One');
+{ ## _render_pointed("chapter-number",'บทที่ /One',"0.0.0") returns correct string
+$msg = '_render_pointed("chapter-number","บทที่ /One","0.0.0") returns correct string';
+$tmp = Book::Bilingual::Reader::_render_pointed('chapter-number','บทที่ /One','0.0.0');
 $got = $tmp;
-$exp = "\n  <h1 class=\"chapter-number\"><span id=\"Ptr\" class=\"pointed\"><span class=\"src-lang\">บทที่ </span>One</span> </h1>\n";
+$exp = "\n  <h1 data-ptr=\"0.0.0\" class=\"chapter-number\"><span id=\"Ptr\" class=\"pointed\"><span class=\"src-lang\">บทที่ </span>One</span> </h1>\n";
 is($got, $exp, $msg);
 }
 
