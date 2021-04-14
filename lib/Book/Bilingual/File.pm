@@ -22,7 +22,7 @@ sub _init {
     my ($self) = @_;
     #say ref $self->book;
 
-    my $text = $self->file->slurp;
+    my $text = $self->file->slurp_utf8;
     $self->chapters( _extract_chapters($text));
 
     foreach my $chapter (@{$self->chapters}) {
