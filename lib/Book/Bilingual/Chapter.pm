@@ -1,4 +1,5 @@
 package Book::Bilingual::Chapter;
+# ABSTRACT: A book chapter class
 use Mojo::Base -base;
 use Carp;
 
