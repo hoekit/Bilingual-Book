@@ -6,7 +6,7 @@ use Carp;
 has 'set';      # Arrayref of Dlines
 
 sub new { $_[0]->SUPER::new({ set => [] }) }
-sub num_dlines {
+sub dline_count {
     my ($self) = @_;
     return scalar @{$self->{set}};
 }

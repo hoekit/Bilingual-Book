@@ -22,13 +22,13 @@ is($got, $exp, $msg);
 { ## $dlineset->push($dline) result in correct length
 $msg = '$dlineset->push($dline) result in correct length';
 $tmp = Book::Bilingual::Dline->new({class=>'chapter-title',str=>'A Great Surprise'});
-$got = Book::Bilingual::Dlineset->new->push($tmp)->num_dlines;
+$got = Book::Bilingual::Dlineset->new->push($tmp)->dline_count;
 $exp = 1;
 is($got, $exp, $msg);
 }
 { ## $dlineset->push($dline) dies on bad type
 $msg = '$dlineset->push($dline) dies on bad type';
-eval { Book::Bilingual::Dlineset->new->push({})->num_dlines; };
+eval { Book::Bilingual::Dlineset->new->push({})->dline_count; };
 $got = $@ =~ /Not a Book::Bilingual::Dline/ ? 1 : 0;
 $exp = 1;
 is($got, $exp, $msg);
