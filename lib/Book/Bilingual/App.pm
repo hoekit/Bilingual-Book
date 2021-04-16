@@ -4,24 +4,23 @@
 use Mojolicious::Lite;
 use Book::Bilingual::Reader;
 
-my $file = '/home/hoekit/bin/data/ff01.mdown';
-my $reader = Book::Bilingual::Reader->new($file);
+my $Reader;
 
 get '/' => sub {
     my $c = shift;
     $c->render(text => 'hello');
 };
 
-get '/reader/html' => sub {
+sub get_reader_html {
     my ($c) = @_;
     my $ptr = $c->param('ptr') || '0.0.0';
 
-    $reader->_ptr([split '\.', $ptr])
+    $Reader->_ptr([split '\.', $ptr])
            ->_load_chapter()
            ->_load_dlineset();
 
-    my ($next_ptr) = @{$reader->_next_ptr || []};
-    my ($prev_ptr) = @{$reader->_prev_ptr || []};
+    my ($next_ptr) = @{$Reader->_next_ptr || []};
+    my ($prev_ptr) = @{$Reader->_prev_ptr || []};
 
     my $next_html = $next_ptr
                   ? '<a id="nextPtr" href="/reader/html?ptr='.$next_ptr.'">Next</a>'
@@ -35,13 +34,21 @@ get '/reader/html' => sub {
     #say "Next HTML: $next_html";
     #say "Prev HTML: $prev_html";
 
-    $c->stash(chapter_html => $reader->html);
+    $c->stash(chapter_html => $Reader->html);
     $c->stash(next_html => $next_html);
     $c->stash(prev_html => $prev_html);
 
-} => 'reader_html';
+}
+get '/reader/html' => \&get_reader_html => 'reader_html';
 
-#app->start;
+sub run { ## ($bookfile)
+    # Does the actual run using the file a
+    my ($file) = @_;
+    die "\n  Usage:\n    biread BOOKFILE\n\n" unless $file;
+
+    $Reader = Book::Bilingual::Reader->new($file);
+    app->start;
+}
 
 __DATA__
 
