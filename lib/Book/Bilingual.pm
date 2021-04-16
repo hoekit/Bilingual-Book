@@ -3,6 +3,8 @@ package Book::Bilingual;
 use Mojo::Base -base;
 use Carp;
 
+use version; our $VERSION = version->declare('v0.001');
+
 has 'chapters';         # ArrayRef of Book::Bilingual::Chapter
 
 sub new { $_[0]->SUPER::new({ chapters => [] }) }
