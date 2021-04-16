@@ -1,0 +1,10 @@
+
+# Skip auto-generated files
+Build.PL
+META.json
+README.md
+
+# Skip build artifacts
+*.tar.gz
+Book-Bilingual-v*/*
+
