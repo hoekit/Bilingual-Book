@@ -1,11 +1,10 @@
-# bin/Reader.pl
-# PODNAME: Reader.pl
+# lib/Book/Bilingual/App.pm
+# PODNAME: App.pm
 # ABSTRACT: A reader app
 use Mojolicious::Lite;
-use lib qw(lib);
 use Book::Bilingual::Reader;
 
-my $file = 't/ff01.mdown';
+my $file = '/home/hoekit/bin/data/ff01.mdown';
 my $reader = Book::Bilingual::Reader->new($file);
 
 get '/' => sub {
@@ -42,7 +41,8 @@ get '/reader/html' => sub {
 
 } => 'reader_html';
 
-app->start;
+#app->start;
+
 __DATA__
 
 @@ index.html.ep
@@ -74,11 +74,15 @@ __DATA__
     footer { position:fixed; width:90%; left:0; bottom:0; text-align:right;
              background-color:#FFF }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
 </head>
   <body>
+
+    <div class="main">
     %== $chapter_html
 
     <br/><br/><br/>
+    </div>
 
     <footer>
     %== $prev_html
@@ -102,30 +106,32 @@ __DATA__
     document.onkeydown = function (event) {
       switch (event.keyCode) {
          case 37:
-            console.log("Left key is pressed.");
-            clickPrev();
+            clickPrev();    // console.log("Left key is pressed.");
             break;
          case 38:
-            console.log("Up key is pressed.");
-            break;
+            break;          // console.log("Up key is pressed.");
          case 39:
-            console.log("Right key is pressed.");
-            clickNext();
+            clickNext();    // console.log("Right key is pressed.");
             break;
          case 40:
-            console.log("Down key is pressed.");
-            break;
+            break;          // console.log("Down key is pressed.");
       }
     };
 
     // Redirect page to sentence that was clicked
-    document.onclick = function(e) {
+    let mc = new Hammer(document.querySelector('.main'))
+    mc.on('tap', function(e) {
+
+        // Get pointer value in the data-ptr attribute
         let ptr = e.target.attributes["data-ptr"]
+
+        // Navigate reader to pointer if defined
         if (typeof ptr !== "undefined") {
             let url = e.target.attributes["data-ptr"].value
             window.location.href = "/reader/html?ptr="+url
         }
-    };
+    })
+
 </script>
 
 </html>

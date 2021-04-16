@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+perl -MBook::Bilingual::App -e 'app->start' daemon
