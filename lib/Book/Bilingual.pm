@@ -3,7 +3,7 @@ package Book::Bilingual;
 use Mojo::Base -base;
 use Carp;
 
-use version; our $VERSION = version->declare('v0.002');
+use version; our $VERSION = version->declare('0.002');
 
 has 'chapters';         # ArrayRef of Book::Bilingual::Chapter
 
