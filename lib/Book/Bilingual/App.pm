@@ -6,12 +6,23 @@ use Book::Bilingual::Reader;
 
 my $Reader;
 
-get '/' => sub {
-    my $c = shift;
-    $c->render(text => 'hello');
-};
+=head1 SYNOPSIS
 
-sub get_reader_html {
+    # Run as a daemon in production
+    biread BOOKFILE
+
+    # Run as morbo to auto reload while in development
+    morbo lib/Book/Bilingual/App.pm BOOKFILE
+
+=cut
+
+
+if ($0 eq '-e') {}          # If called as a module, do nothing
+else { run($ARGV[0]) }      # If called as a program, run it
+
+get '/' => sub {} => 'index';
+
+sub get_reader {
     my ($c) = @_;
     my $ptr = $c->param('ptr') || '0.0.0';
 
@@ -23,10 +34,10 @@ sub get_reader_html {
     my ($prev_ptr) = @{$Reader->_prev_ptr || []};
 
     my $next_html = $next_ptr
-                  ? '<a id="nextPtr" href="/reader/html?ptr='.$next_ptr.'">Next</a>'
+                  ? '<a id="nextPtr" href="/reader?ptr='.$next_ptr.'">Next</a>'
                   : 'Next';
     my $prev_html = $prev_ptr
-                  ? '<a id="prevPtr" href="/reader/html?ptr='.$prev_ptr.'">Prev</a>'
+                  ? '<a id="prevPtr" href="/reader?ptr='.$prev_ptr.'">Prev</a>'
                   : 'Prev';
 
     #say $ptr;
@@ -39,7 +50,9 @@ sub get_reader_html {
     $c->stash(prev_html => $prev_html);
 
 }
-get '/reader/html' => \&get_reader_html => 'reader_html';
+get '/reader' => \&get_reader => 'reader';
+
+get '/credits';
 
 sub run { ## ($bookfile)
     # Does the actual run using the file a
@@ -50,25 +63,18 @@ sub run { ## ($bookfile)
     app->start;
 }
 
+app;    # Need to return an app for morbo to work
+
 __DATA__
 
-@@ index.html.ep
-<%= link_to Reload => 'index' %>.
-<%= link_to Reader => 'reader_html' %>.
-
-@@ reader_html.html.ep
-% my $link = begin
-  % my ($url, $name) = @_;
-  <%= link_to $url => begin %><%= $name %><% end %>.
-% end
-
+@@ layouts/mylayout.html.ep
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="initial-scale=1, maximum-scale=1, width=device-width">
-  <title>Bilingual Book Reader</title>
-
+  <title><%= $title %></title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tachyons@4.12.0/css/tachyons.min.css">
   <style>
     body { margin:2rem; color:gray; line-height:1.8; font-size:1.5rem; }
     .chapter-number{ font-size:2rem; margin:0; }
@@ -83,21 +89,45 @@ __DATA__
   </style>
   <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
 </head>
-  <body>
+<body><%= content %></body>
+</html>
 
+
+@@ index.html.ep
+% layout 'mylayout', title => 'Bilingual Book Reader';
+<h1>Bilingual Book</h1>
+To <%= link_to Reader => 'reader' %>
+| <%= link_to Credits => 'credits' %>
+
+
+@@ credits.html.ep
+% layout 'mylayout', title => 'Bilingual Book | Credits';
+<h2>CREDITS</h2>
+<p>Original Idea<br/>
+  <a class="ml3" href="https://donquixote.fun">Don Quixote</a></p>
+<p>Perl Module<br/>
+  <a class="ml3" href="https://github.com/hoekit/Bilingual-Book">Book::Bilingual</a></p>
+<footer>
+  <%= link_to Home => 'index' %>
+  | To <%= link_to Reader => 'reader' %>
+</footer>
+
+
+@@ reader.html.ep
+% layout 'mylayout', title => 'Bilingual Book | Reader';
     <div class="main">
-    %== $chapter_html
-
-    <br/><br/><br/>
+      %== $chapter_html
+      <br/><br/><br/>
     </div>
-
     <footer>
-    %== $prev_html
-    |
-    %== $next_html
+      <div class="dib w-20"><a href="/credits">Credits</a></div>
+      <div class="dib w-75">
+          %== $prev_html
+          |
+          %== $next_html
+      </div>
     </footer>
 
-  </body>
 <script>
     document.getElementById("Ptr").scrollIntoView();
 
@@ -135,11 +165,8 @@ __DATA__
         // Navigate reader to pointer if defined
         if (typeof ptr !== "undefined") {
             let url = e.target.attributes["data-ptr"].value
-            window.location.href = "/reader/html?ptr="+url
+            window.location.href = "/reader?ptr="+url
         }
     })
-
 </script>
-
-</html>
 
