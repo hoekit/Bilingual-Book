@@ -4,7 +4,6 @@ use Mojo::Base -base;
 use Book::Bilingual;
 use Book::Bilingual::File;
 use Path::Tiny qw/path/;
-use List::Util qw/max/;
 use Carp;
 
 has 'book' => sub { Book::Bilingual->new};  # Book::Bilingual
