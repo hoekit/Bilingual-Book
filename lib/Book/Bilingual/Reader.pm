@@ -1,6 +1,7 @@
 package Book::Bilingual::Reader;
 # ABSTRACT: A book reader class
 use Mojo::Base -base;
+use Mojo::JSON qw(decode_json encode_json);
 use Book::Bilingual;
 use Book::Bilingual::File;
 use Path::Tiny qw/path/;
@@ -249,6 +250,39 @@ sub _cmp_loc ($$) {
     return $A cmp $B;
 }
 
+sub book_json {
+    my ($self) = @_;
+
+    my $Book_json = [];
+    foreach my $ch_idx (0..$self->book->chapter_count-1) {
+        my $chapter = $self->book->chapter_at($ch_idx);
+
+        my $Chapter_json = [];
+        foreach my $dset_idx (0..$chapter->dlineset_count -1) {
+            my $dlineset = $chapter->dlineset_at($dset_idx);
+
+            my $Dset_json = [];
+            foreach my $dline_idx (0..$dlineset->dline_count-1) {
+                my $dline = $dlineset->dline_at($dline_idx);
+
+                my $Dline_json = {  # Create Dline JSON object
+                    ptr   => "$ch_idx.$dset_idx.$dline_idx",
+                    class => $dline->class,
+                    str   => $dline->str
+                };
+
+                push @$Dset_json, $Dline_json;
+            }
+
+            push @$Chapter_json, $Dset_json;
+        }
+
+        push @$Book_json, $Chapter_json;
+    }
+
+    return encode_json $Book_json;
+}
+
 sub ptr { join '.', @{shift->_ptr} }
 
 =encoding utf8
@@ -326,6 +360,17 @@ target language are unlabeled.
 Then create a new Dline with the same class as the input, but with the
 generated HTML as the str. Then call _render_normal on this new Dline to
 generate the final HTML.
+
+=cut
+=head2   book_json() :> JSON
+
+The book_json() public method converts the book into a JSON string. The
+method iterates over all Chapters and all Dlinesets in each chapter and
+all Dlines in all Dlinesets.
+
+Note that the returned JSON string is already utf8 encoded so when
+writing the string to a file, use the form without utf8 encoding e.g.
+use L<Path::Tiny>'s spew() instead spew_utf8().
 
 =cut
 

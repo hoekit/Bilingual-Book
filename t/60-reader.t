@@ -197,5 +197,13 @@ $exp = 'ok';
 is($got, $exp, $msg);
 }
 
+{ ## book_json() return correct JSON with correct length
+$msg = 'book_json() return correct JSON with correct length';
+$tmp = Book::Bilingual::Reader->new('t/ff01.mdown');
+$got = length $tmp->book_json;
+$exp = 6526;
+is($got, $exp, $msg);
+}
+
 done_testing();
 
