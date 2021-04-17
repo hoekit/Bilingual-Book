@@ -10,7 +10,7 @@ sub dline_count {
     my ($self) = @_;
     return scalar @{$self->{set}};
 }
-sub at {        ## ($idx :>Int) :> Dline
+sub dline_at {        ## ($idx :>Int) :> Dline
     my ($self, $idx) = @_;
 
     return $self->{set}[$idx];

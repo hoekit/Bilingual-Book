@@ -40,7 +40,7 @@ $tmp  = Book::Bilingual::Dlineset->new;
 $tmp1 = Book::Bilingual::Dline->new({class=>'chapter-number',str=>'Chapter One'});
 $tmp2 = Book::Bilingual::Dline->new({class=>'chapter-title',str=>'A Great Surprise'});
 $tmp->push($tmp1)->push($tmp2);
-$got = $tmp->at(1)->to_html;
+$got = $tmp->dline_at(1)->to_html;
 $exp = '<div class="chapter-title">A Great Surprise</div>';
 is($got, $exp, $msg);
 }
