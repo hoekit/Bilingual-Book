@@ -114,17 +114,6 @@ sub html { ## () :> HTML
     # say "\n$html\n";
     return $html;
 }
-sub _render {
-    my ($dline) = @_;
-
-    my $seg_idx = 0;
-    my @spans = map {
-        my $class = $seg_idx++ % 2 ? 'tgt-lang' : 'src-lang';
-        "<span class=\"$class\"> $_</span>";
-    } split(' /', $dline->str);
-
-    return '  <div class="'.$dline->class.'">'.join('',@spans).'</div>';
-}
 sub _render_normal { ## ($class,$str,$ptr)
     my ($class,$str,$ptr) = @_;
 
